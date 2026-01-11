@@ -1,5 +1,4 @@
 <script setup>
-import userjpg from "@/images/9187604.png";
 const scrollTo = (id) => {
   const el = document.getElementById(id);
   if (el) {
@@ -46,7 +45,12 @@ const scrollTo = (id) => {
     <div
       class="flex justify-center items-center gap-4 rounded p-8 bg-blue-100 shadow-2xl"
     >
-      <div><img :src="userjpg" class="w-32 h-32" /></div>
+      <div>
+        <img
+          src="https://cdn-icons-png.flaticon.com/512/9187/9187604.png"
+          class="w-32 h-32"
+        />
+      </div>
       <div>
         <ul>
           <li class="font-mono font-bold text-blue-400">
