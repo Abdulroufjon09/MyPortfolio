@@ -11,7 +11,7 @@ const scrollTo = (id) => {
   <div class="flex justify-between items-center px-8 pt-2">
     <div>
       <p class="text-blue-400 cursor-pointer transition-colors font-mono">
-        Navbar
+        My Portfolio
       </p>
     </div>
     <div>
@@ -35,6 +35,13 @@ const scrollTo = (id) => {
             @click="scrollTo('contact')"
             class="text-blue-300 hover:text-blue-400 hover:underline cursor-pointer transition-colors font-mono"
             >Contact</a
+          >
+        </li>
+        <li>
+          <a
+            @click="scrollTo('projects')"
+            class="text-blue-300 hover:text-blue-400 hover:underline cursor-pointer transition-colors font-mono"
+            >My Projects</a
           >
         </li>
       </ul>

@@ -18,10 +18,10 @@ let contacts = reactive([
 </script>
 
 <template>
-  <div class="flex justify-center bg-blue-50 w-full py-8" id="contact">
+  <div class="flex justify-center w-full py-8" id="contact">
     <div class="w-3/6 flex flex-col justify-center gap-4 rounded p-8">
       <div class="">
-        <p class="font-mono font-semibold text-2xl text-blue-950">
+        <p class="font-mono font-semibold text-2xl text-blue-950 animate-bounce">
           Get In Touch
         </p>
       </div>
@@ -37,12 +37,12 @@ let contacts = reactive([
         <div
           v-for="contact in contacts"
           :key="contact.id"
-          class="flex flex-col items-center border-r-2 border-gray-200 p-2 w-7/10  animate-pulse"
+          class="flex flex-col items-center border-r-2 border-gray-200 p-2 w-7/10  "
         >
           <img
             :src="contact.img"
             :alt="contact.name"
-            class="w-8 h-8"
+            class="w-8 h-8 animate-pulse"
             loading="lazy"
           />
           <a :href="contact.link" target="_blank" class="cursor-pointer">
