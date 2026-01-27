@@ -11,7 +11,7 @@ let projects = reactive([
   {
     img: project_1,
     name: "Online Register for Excellence School",
-    link: "https://excellece-school.vercel.app/",
+    link: "https://chocolate-beta.vercel.app/",
   },
   {
     img: project_1,
