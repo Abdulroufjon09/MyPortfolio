@@ -203,13 +203,31 @@ function loadSaved(): Locale {
 
 export const locale = ref<Locale>(loadSaved());
 
+// Til almashtirish fazasi: "out" — eski til matni so'nadi, "in" — yangisi
+// matn elementlarida paydo bo'ladi (App.vue uchun `.lang-out`/`.lang-in`).
+export const localePhase = ref<"idle" | "out" | "in">("idle");
+
+let phaseTimer: number | undefined;
+
 export function setLocale(next: Locale) {
-  locale.value = next;
-  try {
-    window.localStorage.setItem(STORAGE_KEY, next);
-  } catch {
-    /* ignore persistence errors */
-  }
+  // Jarayon ketayotgan bo'lmasa va til o'zgarmagan bo'lsa — hech narsa qilmaymiz.
+  if (next === locale.value && localePhase.value === "idle") return;
+  // Tez-tez bosilsa — avvalgi faza bekor qilinadi, oxirgi tanlov ishlaydi.
+  if (phaseTimer !== undefined) window.clearTimeout(phaseTimer);
+
+  localePhase.value = "out";
+  phaseTimer = window.setTimeout(() => {
+    locale.value = next;
+    try {
+      window.localStorage.setItem(STORAGE_KEY, next);
+    } catch {
+      /* ignore persistence errors */
+    }
+    localePhase.value = "in";
+    phaseTimer = window.setTimeout(() => {
+      localePhase.value = "idle";
+    }, 700);
+  }, 200);
 }
 
 /** Reactive lookup — safe to call directly inside templates. */

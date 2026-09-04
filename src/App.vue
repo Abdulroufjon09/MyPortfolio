@@ -8,10 +8,14 @@ import Projects from "./components/projects.vue";
 import Contact from "./components/contact.vue";
 import Footer from "./components/footer.vue";
 import Starfield from "./components/Starfield.vue";
+import { localePhase } from "@/i18n";
 </script>
 
 <template>
-  <div class="relative min-h-screen font-sans text-slate-200 selection:bg-blue-500/30 selection:text-white">
+  <div
+    class="relative min-h-screen font-sans text-slate-200 selection:bg-blue-500/30 selection:text-white"
+    :class="localePhase === 'out' ? 'lang-out' : localePhase === 'in' ? 'lang-in' : ''"
+  >
     <!-- Yulduzli osmon foni (rang body dan, #0b0f15) -->
     <Starfield />
 

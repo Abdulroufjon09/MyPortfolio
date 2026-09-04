@@ -123,6 +123,47 @@ body {
   animation: gradient-shift 6s ease infinite;
 }
 
+/* ---------------------------------------------------------------
+   Til almashtirish animatsiyasi — FAQAT MATN uchun.
+   `.lang-out` — eski til matni so'nadi; `.lang-in` — yangi til matni
+   matn elementlarida (sarlavha, paragraf, ro'yxat, havola, tugma, span)
+   chapdan o'ngga "yozilganday" ochiladi. Kartalar, rasmlar, ikonkalar
+   va canvas (Starfield) harakatsiz qoladi.
+   --------------------------------------------------------------- */
+.lang-out :is(h1, h2, h3, p, li, a, button, span) {
+  opacity: 0;
+  transition: opacity 150ms ease;
+}
+.lang-in :is(h1, h2, h3, p, li, a, button, span) {
+  animation: lang-type-in 320ms cubic-bezier(0.22, 1, 0.36, 1) backwards;
+}
+/* Ketma-ketlik: sarlavhalar birinchi, paragraf/ro'yxat keyin, yorliqlar oxirgi */
+.lang-in :is(h1, h2, h3) {
+  animation-delay: 0ms;
+}
+.lang-in p,
+.lang-in li {
+  animation-delay: 50ms;
+}
+.lang-in span,
+.lang-in a,
+.lang-in button {
+  animation-delay: 100ms;
+}
+
+@keyframes lang-type-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+    clip-path: inset(0 100% 0 0);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+    clip-path: inset(0 0 0 0);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
@@ -139,6 +180,12 @@ body {
   }
   .animate-float-slow,
   .animate-gradient {
+    animation: none;
+  }
+  .lang-out :is(h1, h2, h3, p, li, a, button, span),
+  .lang-in :is(h1, h2, h3, p, li, a, button, span) {
+    opacity: 1;
+    transition: none;
     animation: none;
   }
 }

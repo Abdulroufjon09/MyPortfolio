@@ -330,10 +330,16 @@ onBeforeUnmount(() => {
 </template>
 
 <style scoped>
-/* Sahifa bilan birga scroll bo'ladigan, kontentdan pastdagi to'liq sahifa qatlami */
+/* Sahifa bilan birga scroll bo'ladigan, kontentdan pastdagi to'liq sahifa qatlami.
+   Muhim: canvas — replaced element, `height` attributi tufayli intrinsic o'lcham
+   layoutga o'tib ketmasligi uchun CSS `width/height: 100%` berilgan (aks holda
+   sahifa canvas balandligicha cho'zilib, katta scroll paydo bo'ladi). */
 .starfield {
   position: absolute;
-  inset: 0;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
   z-index: -10;
   pointer-events: none;
   display: block;
