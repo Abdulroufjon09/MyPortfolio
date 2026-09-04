@@ -17,4 +17,13 @@ export default defineConfigWithVueTs(
 
   ...pluginVue.configs['flat/essential'],
   vueTsConfigs.recommended,
+
+  {
+    // Portfolio section components use short single-word filenames (about, contact, ...)
+    name: 'app/single-word-components',
+    files: ['src/components/**/*.vue'],
+    rules: {
+      'vue/multi-word-component-names': 'off',
+    },
+  },
 )

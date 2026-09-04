@@ -1,70 +1,49 @@
-<script setup>
-import { Check } from "lucide";
-import { reactive } from "vue";
-let images = reactive([
-  {
-    img_url:
-      "https://icons.iconarchive.com/icons/cornmanthe3rd/plex/512/Other-html-5-icon.png",
-  },
-  {
-    img_url:
-      "https://cdn-icons-png.flaticon.com/512/5968/5968242.png",
-  },
-  {
-    img_url:
-      "https://static.vecteezy.com/system/resources/previews/027/127/463/non_2x/javascript-logo-javascript-icon-transparent-free-png.png",
-  },
-  {
-    img_url:
-      "https://images.icon-icons.com/2107/PNG/512/file_type_tailwind_icon_130128.png",
-  },
-  { img_url: "https://images.icon-icons.com/2108/PNG/512/vue_icon_130791.png" },
-]);
+<script setup lang="ts">
+import { Sparkles } from "lucide-vue-next";
+import { t } from "@/i18n";
+
+const highlightKeys = ["about.hl1", "about.hl2", "about.hl3"] as const;
 </script>
 
 <template>
-  <div class="flex justify-center mt-2" id="about">
-    <div class="w-3/6 flex flex-col justify-center gap-4 rounded p-8">
-      <div>
-        <p
-          class="font-mono font-semibold text-2xl text-blue-950 animate-bounce"
-        >
-          About Me
-        </p>
-      </div>
-      <hr
-        class="w-full h-0.5 my-2 bg-gray-200 border-0 animate-pulse shadow-2xl"
-      />
-      <div class="flex justify-center text-center">
-        <p>
-          I'm a passiionate
-          <span class="font-mono font-semibold animate-pulse"
-            >frontend developer</span
-          >
-          with experince building applications using HTML, CSS, JavaScript and
-          Vue. I love creating interactive and use-friendly websites that make
-          difference
-        </p>
-      </div>
-      <div>
-        <ul>
-          <p
-            class="font-mono font-semibold text-2xl text-blue-950 animate-bounce"
-          >
-            Skills
-          </p>
-        </ul>
-        <hr class="w-full h-0.5 my-2 bg-gray-200 border-0 animate-pulse" />
-
-        <div class="flex items-center justify-around gap-2">
-          <span v-for="(img_url, index) in images" :key="index">
-            <img :src="img_url.img_url" alt="" class="w-8" />
-          </span>
-        </div>
-      </div>
+  <section
+    id="about"
+    v-reveal
+    class="scroll-mt-24 rounded-2xl border border-white/5 bg-[#0d1117] p-6 sm:p-8"
+  >
+    <!-- Sarlavha -->
+    <div class="flex items-center gap-3">
+      <span class="font-mono text-sm font-semibold text-blue-500">01.</span>
+      <h2
+        class="text-xl font-bold uppercase tracking-widest text-white sm:text-2xl"
+      >
+        {{ t("about.title") }}
+      </h2>
+      <span
+        class="h-px flex-1 bg-gradient-to-r from-blue-500/50 to-transparent"
+      ></span>
     </div>
-  </div>
+
+    <p
+      class="mt-6 border-l-2 border-blue-500/60 pl-4 text-[15px] leading-relaxed text-slate-300"
+    >
+      {{ t("about.text") }}
+    </p>
+
+    <ul class="mt-6 grid gap-3 sm:grid-cols-3">
+      <li
+        v-for="(key, index) in highlightKeys"
+        :key="key"
+        v-reveal
+        data-reveal="up"
+        :data-delay="String(150 + index * 100)"
+        class="flex items-center gap-2.5 rounded-xl border border-white/5 bg-white/[0.03] px-4 py-3 text-sm text-slate-300 transition-colors hover:border-blue-500/30"
+      >
+        <Sparkles class="h-4 w-4 shrink-0 text-blue-500" />
+        {{ t(key) }}
+      </li>
+    </ul>
+  </section>
 </template>
 
-<style scoped>
-</style>
+<style scoped></style>

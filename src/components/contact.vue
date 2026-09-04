@@ -1,58 +1,90 @@
-<script setup>
-import { reactive } from "vue";
+<script setup lang="ts">
+import { Github, Instagram, Mail, Send } from "lucide-vue-next";
+import { t } from "@/i18n";
 
-let contacts = reactive([
+const contacts = [
   {
-    name: "@Abdulroufjon1",
-    img: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/83/Telegram_2019_Logo.svg/512px-Telegram_2019_Logo.svg.png",
+    label: "Telegram",
+    value: "@Abdulroufjon1",
+    href: "https://t.me/Abdulroufjon1",
+    icon: Send,
   },
   {
-    name: "abdulroufjon726@gmail.com",
-    img: "https://images.icon-icons.com/2642/PNG/512/google_mail_gmail_logo_icon_159346.png",
+    label: "Email",
+    value: "abdulroufjonm0@gmail.com",
+    href: "mailto:abdulroufjonm0@gmail.com",
+    icon: Mail,
   },
   {
-    name: "_Abdulroufjon_",
-    img: "https://cdn-icons-png.flaticon.com/512/2111/2111463.png",
+    label: "GitHub",
+    value: "Abdulroufjon9",
+    href: "https://github.com/Abdulroufjon9",
+    icon: Github,
   },
-]);
+  {
+    label: "Instagram",
+    value: "_Abdulroufjon_",
+    href: "https://instagram.com/_Abdulroufjon_",
+    icon: Instagram,
+  },
+];
+
+const openInNewTab = (href: string) => href.startsWith("http");
 </script>
 
 <template>
-  <div class="flex justify-center w-full py-8" id="contact">
-    <div class="w-3/6 flex flex-col justify-center gap-4 rounded p-8">
-      <div class="">
-        <p class="font-mono font-semibold text-2xl text-blue-950 animate-bounce">
-          Get In Touch
-        </p>
-      </div>
-      <hr
-        class="w-full h-0.5 my-2 bg-gray-200 border-0 animate-pulse shadow-2xl"
-      />
-      <div class="">
-        <p class="font-mono text-blue-400">
-          Feel free to contact me for any opportunities or questions
-        </p>
-      </div>
-      <div class="flex items-center border-l-2 border-gray-200 mt-10">
-        <div
-          v-for="contact in contacts"
-          :key="contact.id"
-          class="flex flex-col items-center border-r-2 border-gray-200 p-2 w-7/10  "
-        >
-          <img
-            :src="contact.img"
-            :alt="contact.name"
-            class="w-8 h-8 animate-pulse"
-            loading="lazy"
-          />
-          <a :href="contact.link" target="_blank" class="cursor-pointer">
-            {{ contact.name }}
-          </a>
-        </div>
-      </div>
+  <section id="contact" class="mx-auto max-w-6xl scroll-mt-24 px-4 pb-16 sm:px-6 lg:px-8">
+    <div v-reveal class="flex items-center gap-3">
+      <span class="font-mono text-sm font-semibold text-blue-500">07.</span>
+      <h2
+        class="text-xl font-bold uppercase tracking-widest text-white sm:text-2xl"
+      >
+        {{ t("contact.title") }}
+      </h2>
+      <span
+        class="h-px flex-1 bg-gradient-to-r from-blue-500/50 to-transparent"
+      ></span>
     </div>
-  </div>
+
+    <p v-reveal data-reveal="up" class="mt-4 text-[15px] text-slate-400">
+      {{ t("contact.intro") }}
+    </p>
+
+    <div class="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      <a
+        v-for="(contact, index) in contacts"
+        :key="contact.label"
+        :href="contact.href"
+        :target="openInNewTab(contact.href) ? '_blank' : undefined"
+        :rel="openInNewTab(contact.href) ? 'noopener noreferrer' : undefined"
+        v-reveal
+        data-reveal="up"
+        :data-delay="String(index * 100)"
+        class="group flex flex-col items-start gap-4 rounded-2xl border border-white/5 bg-[#0d1117] p-5 transition-all duration-300 hover:-translate-y-1 hover:border-blue-500/40 hover:shadow-xl hover:shadow-blue-500/10"
+      >
+        <span
+          class="flex h-11 w-11 items-center justify-center rounded-xl border border-white/5 bg-white/[0.03] transition-colors group-hover:border-blue-500/40 group-hover:bg-blue-500/10"
+        >
+          <component
+            :is="contact.icon"
+            class="h-5 w-5 text-blue-500 transition-transform group-hover:scale-110"
+          />
+        </span>
+        <span>
+          <span
+            class="block font-mono text-[11px] font-semibold uppercase tracking-[0.2em] text-blue-500/90"
+          >
+            {{ contact.label }}
+          </span>
+          <span
+            class="mt-1 block break-all text-sm font-medium text-slate-200 transition-colors group-hover:text-white"
+          >
+            {{ contact.value }}
+          </span>
+        </span>
+      </a>
+    </div>
+  </section>
 </template>
 
-<style scoped>
-</style>
+<style scoped></style>

@@ -1,1 +1,138 @@
 @import "tailwindcss";
+
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI",
+    sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas,
+    monospace;
+}
+
+html {
+  scroll-behavior: smooth;
+  overflow-x: clip;
+}
+
+body {
+  background-color: #0b0f15;
+  color: #e2e8f0;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ---------------------------------------------------------------
+   Scroll-reveal animation system
+   Usage: v-reveal directive + optional data-reveal="up|down|left|right|zoom"
+          and optional data-delay="150" (ms)
+
+   Reveal runs as a one-shot keyframe animation rather than a CSS
+   transition so it never overrides Tailwind's transition-* utilities
+   (hover effects on cards/badges keep their own timing).
+   --------------------------------------------------------------- */
+.reveal {
+  opacity: 0;
+}
+
+.reveal.is-visible {
+  opacity: 1;
+  animation: reveal-up 0.8s cubic-bezier(0.22, 1, 0.36, 1) backwards;
+}
+.reveal[data-reveal="down"].is-visible {
+  animation-name: reveal-down;
+}
+.reveal[data-reveal="left"].is-visible {
+  animation-name: reveal-left;
+}
+.reveal[data-reveal="right"].is-visible {
+  animation-name: reveal-right;
+}
+.reveal[data-reveal="zoom"].is-visible {
+  animation-name: reveal-zoom;
+}
+
+@keyframes reveal-up {
+  from {
+    opacity: 0;
+    transform: translateY(48px);
+  }
+}
+@keyframes reveal-down {
+  from {
+    opacity: 0;
+    transform: translateY(-48px);
+  }
+}
+@keyframes reveal-left {
+  from {
+    opacity: 0;
+    transform: translateX(-56px);
+  }
+}
+@keyframes reveal-right {
+  from {
+    opacity: 0;
+    transform: translateX(56px);
+  }
+}
+@keyframes reveal-zoom {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+}
+
+/* Animated skill bars — width animates once the parent section becomes visible */
+.skill-bar {
+  width: 0;
+  transition: width 1.2s cubic-bezier(0.22, 1, 0.36, 1) 0.15s;
+}
+.reveal.is-visible .skill-bar {
+  width: var(--level);
+}
+
+/* Soft floating animation for decorative elements */
+@keyframes float-slow {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-12px);
+  }
+}
+.animate-float-slow {
+  animation: float-slow 6s ease-in-out infinite;
+}
+
+/* Animated gradient text */
+@keyframes gradient-shift {
+  0%,
+  100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+.animate-gradient {
+  background-size: 200% 200%;
+  animation: gradient-shift 6s ease infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  .reveal {
+    opacity: 1 !important;
+  }
+  .reveal.is-visible {
+    animation: none !important;
+  }
+  .skill-bar {
+    width: var(--level);
+    transition: none;
+  }
+  .animate-float-slow,
+  .animate-gradient {
+    animation: none;
+  }
+}
