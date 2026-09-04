@@ -34,7 +34,7 @@ const technologies = [
   <section
     id="skills"
     v-reveal
-    class="rounded-2xl border border-white/5 bg-[#0d1117] p-6 sm:p-8"
+    class="card-glass rounded-2xl border border-white/5 p-6 sm:p-8"
   >
     <!-- Sarlavha -->
     <div class="flex items-center gap-3">

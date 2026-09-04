@@ -12,12 +12,6 @@ interface ContactRow {
 
 const contacts: ContactRow[] = [
   {
-    labelKey: "side.telefon",
-    value: "+998 90 056 23 45",
-    href: "tel:+998900562345",
-    icon: Phone,
-  },
-  {
     label: "Email",
     value: "abdulroufjonm0@gmail.com",
     href: "mailto:abdulroufjonm0@gmail.com",
@@ -53,19 +47,19 @@ const directionKeys = ["dir1", "dir2", "dir3", "dir4"] as const;
   <aside class="self-start lg:sticky lg:top-24">
     <div
       v-reveal
-      class="overflow-hidden rounded-2xl border border-white/5 bg-[#0d1117] shadow-2xl shadow-black/40"
+      class="card-glass overflow-hidden rounded-2xl border border-white/5 shadow-2xl shadow-black/40"
     >
       <!-- Profil -->
       <div class="flex flex-col items-center px-6 pb-7 pt-10 text-center">
         <div class="relative">
           <div
-            class="absolute -inset-1.5 animate-float-slow rounded-full bg-gradient-to-tr from-blue-600 via-cyan-400 to-blue-600 opacity-70 blur-md"
+            class="absolute -inset-1.5 animate-pulse rounded-full bg-gradient-to-tr  from-blue-600 via-cyan-400 to-blue-600 opacity-70 blur-md"
           ></div>
           <!-- O'z rasmingizni shu yerga qo'ying -->
           <img
             src="https://cdn-icons-png.flaticon.com/512/9187/9187604.png"
             alt="Abdulroufjon Moydinov"
-            class="relative h-32 w-32 rounded-full border-4 border-[#0d1117] object-cover"
+            class="relative h-32 w-32 object-cover "
           />
         </div>
 

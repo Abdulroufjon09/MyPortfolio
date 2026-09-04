@@ -72,7 +72,7 @@ onBeforeUnmount(() => {
 
 <template>
   <header
-    class="sticky top-0 z-40 border-b backdrop-blur-md transition-[background-color,box-shadow,border-color] duration-300"
+    class="sticky top-0 z-40 border-b rounded-b-2xl backdrop-blur-md transition-[background-color,box-shadow,border-color] duration-300"
     :class="
       scrolled
         ? 'border-white/10 bg-[#0b0f15]/95 shadow-lg shadow-black/40'
@@ -91,7 +91,7 @@ onBeforeUnmount(() => {
           </span>
         </span>
         <span class="font-mono text-sm font-semibold tracking-wide text-slate-100">
-          abdulroufjon<span class="text-blue-400">.dev</span><span class="logo-cursor"></span>
+          Abdulroufjon<span class="text-blue-400">.dev</span><span class="logo-cursor"></span>
         </span>
       </button>
 
@@ -152,7 +152,7 @@ onBeforeUnmount(() => {
     >
       <ul
         v-if="menuOpen"
-        class="space-y-1 border-t border-white/5 bg-[#0d1117] px-4 py-3 md:hidden"
+        class="card-glass space-y-1 border-t border-white/5 px-4 py-3 md:hidden"
       >
         <li v-for="(link, index) in links" :key="link.target">
           <button

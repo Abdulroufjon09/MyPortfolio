@@ -9,7 +9,7 @@ const projectTech = ["Python", "Django", "Vue.js", "Telegram Bot"];
   <section
     id="experience"
     v-reveal
-    class="scroll-mt-24 rounded-2xl border border-white/5 bg-[#0d1117] p-6 sm:p-8"
+    class="card-glass scroll-mt-24 rounded-2xl border border-white/5 p-6 sm:p-8"
   >
     <!-- Sarlavha -->
     <div class="flex items-center gap-3">

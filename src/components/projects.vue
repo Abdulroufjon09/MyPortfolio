@@ -1,31 +1,31 @@
 <script setup lang="ts">
-import { ExternalLink } from "lucide-vue-next";
+import { Candy, ExternalLink, GraduationCap, ShoppingCart } from "lucide-vue-next";
 import { t } from "@/i18n";
-import project_1 from "@/assets/images/logo.jpg";
-import project_2 from "@/assets/images/chocolate.svg";
-import project_3 from "@/assets/images/marketplace.webp";
 
 const projects = [
   {
-    img: project_1,
-    name: "Excellence School",
+    name: "School Landing",
     descKey: "projects.p1.desc",
     tech: ["Vue.js", "Tailwind CSS"],
     link: "https://excellece-school.vercel.app/",
+    icon: GraduationCap,
+    accent: "#2dd4bf",
   },
   {
-    img: project_3,
     name: "Market Place",
     descKey: "projects.p2.desc",
     tech: ["Vue.js", "JavaScript"],
     link: "https://chocolate-beta.vercel.app/",
+    icon: ShoppingCart,
+    accent: "#60a5fa",
   },
   {
-    img: project_2,
     name: "Chocolate Page",
     descKey: "projects.p3.desc",
     tech: ["HTML", "CSS", "JavaScript"],
     link: "https://chocolate-beta.vercel.app/",
+    icon: Candy,
+    accent: "#fb923c",
   },
 ];
 </script>
@@ -51,16 +51,45 @@ const projects = [
         v-reveal
         data-reveal="up"
         :data-delay="String(index * 120)"
-        class="group overflow-hidden rounded-2xl border border-white/5 bg-[#0d1117] transition-all duration-300 hover:-translate-y-1.5 hover:border-blue-500/40 hover:shadow-2xl hover:shadow-blue-500/10"
+        class="card-glass group overflow-hidden rounded-2xl border border-white/5 transition-all duration-300 hover:-translate-y-1.5 hover:border-blue-500/40 hover:shadow-2xl hover:shadow-blue-500/10"
       >
         <a :href="project.link" target="_blank" rel="noopener noreferrer" class="block">
-          <div class="relative aspect-[16/10] overflow-hidden bg-white/5">
-            <img
-              :src="project.img"
-              :alt="project.name"
-              loading="lazy"
-              class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
-            />
+          <div
+            class="relative aspect-[16/10] overflow-hidden"
+            :style="{
+              background: `radial-gradient(circle at 50% 38%, ${project.accent}1c, transparent 72%), linear-gradient(180deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02))`,
+            }"
+          >
+            <!-- Dekorativ doiralar -->
+            <div
+              class="absolute left-1/2 top-1/2 h-44 w-44 -translate-x-1/2 -translate-y-1/2 rounded-full border transition-transform duration-500 group-hover:scale-110"
+              :style="{ borderColor: `${project.accent}26` }"
+            ></div>
+            <div
+              class="absolute left-1/2 top-1/2 h-28 w-28 -translate-x-1/2 -translate-y-1/2 rounded-full border border-white/5 transition-transform duration-500 group-hover:scale-125"
+            ></div>
+
+            <!-- Loyihaga mos ikonka (dekorativ — o'quvchi uchun yashirin) -->
+            <div
+              aria-hidden="true"
+              class="absolute inset-0 flex items-center justify-center"
+            >
+              <div
+                class="relative flex h-20 w-20 items-center justify-center rounded-2xl border bg-[#0b0f15]/70 backdrop-blur transition-all duration-500 group-hover:-translate-y-1.5 group-hover:scale-110"
+                :style="{
+                  borderColor: `${project.accent}40`,
+                  boxShadow: `0 0 46px -8px ${project.accent}66`,
+                }"
+              >
+                <component
+                  :is="project.icon"
+                  class="h-10 w-10 transition-transform duration-500 group-hover:scale-110"
+                  :style="{ color: project.accent }"
+                  :stroke-width="1.75"
+                />
+              </div>
+            </div>
+
             <div
               class="absolute inset-0 bg-gradient-to-t from-[#0d1117] via-transparent to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100"
             ></div>

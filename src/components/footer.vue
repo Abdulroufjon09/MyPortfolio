@@ -8,7 +8,7 @@ const scrollTop = () => {
 </script>
 
 <template>
-  <footer class="border-t border-white/5 bg-[#0d1117]">
+  <footer class="card-glass border-t border-white/5">
     <div
       class="mx-auto flex max-w-6xl flex-col items-center justify-between gap-4 px-4 py-8 sm:flex-row sm:px-6 lg:px-8"
     >

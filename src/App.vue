@@ -7,12 +7,13 @@ import Skills from "./components/skills.vue";
 import Projects from "./components/projects.vue";
 import Contact from "./components/contact.vue";
 import Footer from "./components/footer.vue";
+import Starfield from "./components/Starfield.vue";
 </script>
 
 <template>
-  <div class="min-h-screen bg-[#0b0f15] font-sans text-slate-200 selection:bg-blue-500/30 selection:text-white">
-    <!-- Yuqori chegara chizig'i -->
-    <div class="animate-gradient h-1.5 bg-gradient-to-r from-blue-600 via-cyan-400 to-blue-600"></div>
+  <div class="relative min-h-screen font-sans text-slate-200 selection:bg-blue-500/30 selection:text-white">
+    <!-- Yulduzli osmon foni (rang body dan, #0b0f15) -->
+    <Starfield />
 
     <Header />
 

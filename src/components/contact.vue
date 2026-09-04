@@ -60,7 +60,7 @@ const openInNewTab = (href: string) => href.startsWith("http");
         v-reveal
         data-reveal="up"
         :data-delay="String(index * 100)"
-        class="group flex flex-col items-start gap-4 rounded-2xl border border-white/5 bg-[#0d1117] p-5 transition-all duration-300 hover:-translate-y-1 hover:border-blue-500/40 hover:shadow-xl hover:shadow-blue-500/10"
+        class="card-glass group flex flex-col items-start gap-4 rounded-2xl border border-white/5 p-5 transition-all duration-300 hover:-translate-y-1 hover:border-blue-500/40 hover:shadow-xl hover:shadow-blue-500/10"
       >
         <span
           class="flex h-11 w-11 items-center justify-center rounded-xl border border-white/5 bg-white/[0.03] transition-colors group-hover:border-blue-500/40 group-hover:bg-blue-500/10"

@@ -18,6 +18,12 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
+/* Yulduzli osmon fon ustida kartalarning yagona shaffoflik sozlagichi.
+   Qiymatni o'zgartirish — bitta joyda. */
+.card-glass {
+  background-color: rgb(13 17 23 / 0.55);
+}
+
 /* ---------------------------------------------------------------
    Scroll-reveal animation system
    Usage: v-reveal directive + optional data-reveal="up|down|left|right|zoom"
