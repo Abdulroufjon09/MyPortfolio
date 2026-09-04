@@ -121,6 +121,7 @@ onBeforeUnmount(() => {
             v-for="code in SUPPORTED_LOCALES"
             :key="code"
             @click="switchLocale(code)"
+            class="cursor-pointer"
             :class="['lang-btn', { active: locale === code }]"
             :aria-pressed="locale === code"
           >
@@ -306,9 +307,10 @@ onBeforeUnmount(() => {
 }
 .logo-cursor {
   display: inline-block;
-  width: 0.45em;
-  height: 1.05em;
+  width: 0.15em;
+  height: 0.70em;
   margin-left: 0.15em;
+  margin-bottom: 0.20em;
   vertical-align: text-bottom;
   border-radius: 1px;
   background: #22d3ee;
