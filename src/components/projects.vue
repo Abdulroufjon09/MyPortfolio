@@ -15,7 +15,7 @@ const projects = [
     name: "Market Place",
     descKey: "projects.p2.desc",
     tech: ["Vue.js", "JavaScript"],
-    link: "https://chocolate-beta.vercel.app/",
+    link: "",
     icon: ShoppingCart,
     accent: "#60a5fa",
   },

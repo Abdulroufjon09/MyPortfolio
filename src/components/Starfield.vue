@@ -36,8 +36,6 @@ const MAX_STARS = 900;
 const REPEL_RADIUS = 170;
 const REPEL_MAX = 30;
 const STREAK_LEN = 140; // uchib o'tuvchi yulduzning izi uzunligi (px)
-// Judayam baland sahifalarda canvas xotirasini cheklash
-const MAX_BACKING_PX = 16_000_000;
 
 const canvasEl = ref<HTMLCanvasElement | null>(null);
 
@@ -46,14 +44,24 @@ let glow: HTMLCanvasElement | null = null; // yumshoq yulduz spriti
 let stars: Star[] = [];
 let shootingStars: ShootingStar[] = [];
 let coveredH = 0; // qaysi balandlikkacha yulduz joylashtirilgan (px)
-let docW = 0;
-let docH = 0;
+let docW = 0; // sahifa kengligi (yulduz x koordinatalari uchun)
+let docH = 0; // sahifa balandligi (yulduz zichligi uchun)
 let scale = 1; // canvas backing-store koeffitsiyenti (devicePixelRatio)
 let rafId = 0;
+let staticRaf = 0;
+let lastDraw = 0;
+let staticMode = false;
 let roTimer = 0;
 let resizeObserver: ResizeObserver | null = null;
 
-const mouse = { x: -1e9, y: -1e9 };
+// Canvas ENDI viewport o'lchamida (fixed) — sahifa bo'ylab cho'zilgan
+// ulkan tekstura telefon GPU'sini bo'g'ardi. Yulduzlar sahifa
+// koordinatalarida qoladi, chizishda scroll siljishi ayiriladi.
+const mouse = { x: -1e9, y: -1e9 }; // VIEWPORT koordinatalari (clientX/Y)
+// Touch qurilmalarda kadr tezligini 30fps ga cheklaymiz — twinkle/drift
+// sekin, 60fps farqi ko'rinmaydi, lekin GPU/batareya yuki ikki barobar kamayadi.
+const FRAME_MS = window.matchMedia("(pointer: coarse)").matches ? 33 : 16;
+
 const inBand = (y: number, top: number, bottom: number, pad = 120) =>
   y >= top - pad && y <= bottom + pad;
 
@@ -107,20 +115,16 @@ const initShootingStars = () => {
   ];
 };
 
-
+// Canvas o'lchami faqat VIEWPORT — hujjat emas. Yulduzlar modeli sahifa
+// koordinatalarida qolgani uchun resize'da hech narsa siljimaydi (pop yo'q).
 const resize = () => {
   const el = canvasEl.value;
   if (!el) return;
   docW = document.documentElement.clientWidth;
   docH = Math.max(document.documentElement.scrollHeight, window.innerHeight);
-  const dpr = Math.min(window.devicePixelRatio || 1, 2);
-  const rawArea = docW * dpr * docH * dpr;
-  scale =
-    rawArea > MAX_BACKING_PX
-      ? Math.max(1, Math.sqrt(MAX_BACKING_PX / (docW * docH)))
-      : dpr;
-  el.width = Math.max(1, Math.round(docW * scale));
-  el.height = Math.max(1, Math.round(docH * scale));
+  scale = Math.min(window.devicePixelRatio || 1, 2);
+  el.width = Math.max(1, Math.round(window.innerWidth * scale));
+  el.height = Math.max(1, Math.round(window.innerHeight * scale));
   ensureStarsCover();
   if (shootingStars.length === 0) initShootingStars();
 };
@@ -165,15 +169,16 @@ const shootAlpha = (p: number) => {
   return 0;
 };
 
-const paintShootingStar = (s: ShootingStar, t: number) => {
+const paintShootingStar = (s: ShootingStar, t: number, top: number) => {
   if (!ctx || !glow) return;
   const dur = s.duration;
   const p = ((((t - s.delay) % dur) + dur) % dur) / dur;
   const alpha = shootAlpha(p);
   if (alpha <= 0.02) return;
   const prog = Math.min(p / 0.12, 1);
-  const hx = s.x + s.dx * prog;
-  const hy = s.y + s.dy * prog;
+  // Sahifa koordinatalaridan VIEWPORT koordinatalariga o'tamiz (scroll ayiriladi)
+  const hx = s.x + s.dx * prog - top;
+  const hy = s.y + s.dy * prog - top;
   const len = Math.hypot(s.dx, s.dy) || 1;
   const ux = s.dx / len;
   const uy = s.dy / len;
@@ -207,26 +212,24 @@ const drawView = (now: number, animated: boolean) => {
   if (!ctx || !glow) return;
   const t = now / 1000;
   const top = window.scrollY;
+  const vw = window.innerWidth;
   const vh = window.innerHeight;
-  const bottom = top + vh;
-  // Faqat ko'rinadigan bandni tozalaymiz va chizamiz — sahifa qanchalik baland bo'lmasin,
-  // xotira va rAF yuki viewport bilan chegaralanadi.
+  // Viewport canvas — to'liq tozalash juda arzon (hujjat emas)
   ctx.setTransform(scale, 0, 0, scale, 0, 0);
-  ctx.clearRect(0, top, docW, vh);
+  ctx.clearRect(0, 0, vw, vh);
 
   const draws: { s: Star; dx: number; dy: number; alpha: number }[] = [];
-  // Barcha yulduzlarni tekshirib, faqat ko'rinadigan banddagilarni chizamiz.
-  // (Yulduzlar sahifa bo'ylab tartibsiz yoyilgan — prefix emas, barchasini filtrlash kerak.)
   for (let i = 0; i < stars.length; i++) {
     const s = stars[i]!;
-    if (!inBand(s.y, top, bottom)) continue;
+    // Yulduz ekrandagi o'rni = sahifa pozitsiyasi − scroll siljishi
+    if (!inBand(s.y - top, 0, vh)) continue;
     let alpha = s.baseOpacity;
     let dx = 0;
     let dy = 0;
     if (animated) {
-      // Sichqonchadan qochish: kursorga yaqin yulduzlar uzoqlashadi
+      // Sichqonchadan qochish: kursorga yaqin yulduzlar uzoqlashadi (ekran koordinatalarida)
       const relX = s.x - mouse.x;
-      const relY = s.y - mouse.y;
+      const relY = s.y - top - mouse.y;
       const dist = Math.hypot(relX, relY);
       let pushX = 0;
       let pushY = 0;
@@ -250,31 +253,30 @@ const drawView = (now: number, animated: boolean) => {
     }
     draws.push({ s, dx, dy, alpha });
   }
-  // Yulduzlarni sahifa koordinatalarida (absolyut) chizamiz — canvas document bilan
-  // birga scroll bo'ladi, shuning uchun band va transform mos holda joylashadi.
   for (const { s, dx, dy, alpha } of draws) {
-    paintStar(s.x + dx, s.y + dy, s.size, alpha, s.bright);
+    paintStar(s.x + dx, s.y + dy - top, s.size, alpha, s.bright);
   }
 
   if (animated) {
     for (const sh of shootingStars) {
-      if (inBand(sh.y, top, bottom, 260)) paintShootingStar(sh, t);
+      if (inBand(sh.y - top, 0, vh, 260)) paintShootingStar(sh, t, top);
     }
   }
 };
 
-// Xotirani cheklaydigan yagona rezerv: channel uzunligi bo'yicha (16M px) —
-// canvas backing-store o'lchami saqlanadi, faqat per-frame yuk viewport bilan cheklanadi.
-const draw = (now: number, animated: boolean) => drawView(now, animated);
-
 const reducedMotion = () =>
   window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-const drawStatic = () => draw(performance.now(), false);
+// Static rejim (reduced-motion): fixed canvas scroll'da o'zi siljimaydi,
+// shuning uchun scroll hodisasida bandni qayta chizamiz.
+const drawStatic = () => {
+  cancelAnimationFrame(staticRaf);
+  staticRaf = requestAnimationFrame(() => drawView(performance.now(), false));
+};
 
 const onPointerMove = (e: PointerEvent) => {
-  mouse.x = e.clientX + window.scrollX;
-  mouse.y = e.clientY + window.scrollY;
+  mouse.x = e.clientX; // viewport koordinatalari
+  mouse.y = e.clientY;
 };
 
 const resetPointer = () => {
@@ -283,7 +285,10 @@ const resetPointer = () => {
 };
 
 const tick = (now: number) => {
-  draw(now, true);
+  if (now - lastDraw >= FRAME_MS) {
+    drawView(now, true);
+    lastDraw = now;
+  }
   rafId = requestAnimationFrame(tick);
 };
 
@@ -302,23 +307,33 @@ onMounted(() => {
   makeGlowSprite();
   resize();
   if (reducedMotion()) {
+    staticMode = true;
+    window.addEventListener("scroll", drawStatic, { passive: true });
     drawStatic();
   } else {
     window.addEventListener("pointermove", onPointerMove, { passive: true });
     document.addEventListener("pointerleave", resetPointer);
     window.addEventListener("pointerup", resetPointer);
+    window.addEventListener("pointercancel", resetPointer);
     rafId = requestAnimationFrame(tick);
   }
-  // Canvas o'lchami (sahifa balandligi) o'zgarsa — yangi oraliqqa yulduz qo'shamiz
+  // Canvas box'i (viewport) o'zgarsa — backing'ni yangilaymiz; body box'i esa
+  // hujjat balandligini aks ettiradi: kontent keyinroq o'ssa (font yuklanishi,
+  // dinamik bloklar) pastki band ham yulduzlar bilan to'ldiriladi. Fixed canvas
+  // hujjat balandligini kuzatmaydi, shuning uchun body ham kuzatiladi.
   resizeObserver = new ResizeObserver(onBoxChange);
   resizeObserver.observe(el);
+  resizeObserver.observe(document.body);
 });
 
 onBeforeUnmount(() => {
   cancelAnimationFrame(rafId);
+  cancelAnimationFrame(staticRaf);
   window.removeEventListener("pointermove", onPointerMove);
   document.removeEventListener("pointerleave", resetPointer);
   window.removeEventListener("pointerup", resetPointer);
+  window.removeEventListener("pointercancel", resetPointer);
+  window.removeEventListener("scroll", drawStatic);
   window.clearTimeout(roTimer);
   resizeObserver?.disconnect();
   resizeObserver = null;
@@ -330,14 +345,15 @@ onBeforeUnmount(() => {
 </template>
 
 <style scoped>
-/* Sahifa bilan birga scroll bo'ladigan, kontentdan pastdagi to'liq sahifa qatlami.
-   Muhim: canvas — replaced element, `height` attributi tufayli intrinsic o'lcham
-   layoutga o'tib ketmasligi uchun CSS `width/height: 100%` berilgan (aks holda
-   sahifa canvas balandligicha cho'zilib, katta scroll paydo bo'ladi). */
+/* VIEWPORT o'lchamidagi fixed qatlam — sahifa bo'ylab cho'zilgan ulkan canvas
+   telefon GPU'sini bo'g'ardi. Endi canvas ekran o'lchamida, yulduzlar esa
+   sahifa koordinatalarida model qilib saqlanadi va scroll siljishi bilan
+   chiziladi (vizual natija avvalgidek: yulduzlar sahifa bilan birga suzadi).
+   `width/height: 100%` replaced element tufayli majburiy — aks holda
+   attribute balandligi layoutga o'tib, katta scroll paydo bo'ladi. */
 .starfield {
-  position: absolute;
-  top: 0;
-  left: 0;
+  position: fixed;
+  inset: 0;
   width: 100%;
   height: 100%;
   z-index: -10;
